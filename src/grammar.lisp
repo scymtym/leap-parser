@@ -41,7 +41,11 @@
   (:when *list-context*))
 
 (defrule comment
-    shell-style-comment/trimmed)
+    (and shell-style-comment/trimmed
+         (* (and #\Newline (* whitespace) shell-style-comment/trimmed)))
+  (:text t)
+  (:lambda (content)
+    (bp:node* (:comment :content content))))
 
 (macrolet ((define-tokens (&rest characters)
              (flet ((make-rule (character)
