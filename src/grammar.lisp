@@ -151,10 +151,16 @@
 (defrule literal
     (or integer-literal/decimal
         string-literal/double-quotes
+        string-literal/dollar
         variable-name
         dummy)
   (:lambda (value)
     (bp:node* (:literal :vaue value))))
+
+(defrule string-literal/dollar
+    (and #\$ (* (not (or whitespace #\, #\;))) (? (or #\, #\;)))
+  (:function second)
+  (:text t))
 
 (defrule dummy
     token-*)
