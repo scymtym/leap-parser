@@ -155,7 +155,7 @@
         variable-name
         dummy)
   (:lambda (value)
-    (bp:node* (:literal :vaue value))))
+    (bp:node* (:literal :value value))))
 
 (defrule string-literal/dollar
     (and #\$ (* (not (or whitespace #\, #\;))) (? (or #\, #\;)))

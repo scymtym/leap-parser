@@ -42,7 +42,7 @@
     (:LEAP
      (:INSTRUCTION
       (((:COMMENT NIL :CONTENT " Comment"))
-       ((:FUNCTION (:ARGUMENT (((:LITERAL NIL :VAUE "leap.log")))) :NAME
+       ((:FUNCTION (:ARGUMENT (((:LITERAL NIL :VALUE "leap.log")))) :NAME
          "logFile"))
        ((:FUNCTION
          (:ARGUMENT
@@ -50,10 +50,10 @@
              (:ELEMENT
               (((:LIST
                  (:ELEMENT
-                  (((:LITERAL NIL :VAUE "H")) ((:LITERAL NIL :VAUE "H"))
-                   ((:LITERAL NIL :VAUE "sp3"))))))))))))
+                  (((:LITERAL NIL :VALUE "H")) ((:LITERAL NIL :VALUE "H"))
+                   ((:LITERAL NIL :VALUE "sp3"))))))))))))
          :NAME "addAtomTypes"))
-       ((:ASSIGNMENT (:VALUE (((:LITERAL NIL :VAUE "TP3")))) :NAME "HOH")))))
+       ((:ASSIGNMENT (:VALUE (((:LITERAL NIL :VALUE "TP3")))) :NAME "HOH")))))
     NIL
     T
-    #+end_example
+#+end_example
