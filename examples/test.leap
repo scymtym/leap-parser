@@ -1,0 +1,9 @@
+# Comment
+
+logFile leap.log
+
+addAtomTypes {
+  { "H"   "H" "sp3" }
+}
+
+HOH = TP3
