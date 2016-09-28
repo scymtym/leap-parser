@@ -1,0 +1,59 @@
+* Dependencies
+  + [[https://github.com/scymtym/architecture.builder-protocol][architecture.builder-protocol]] (not yet in Quicklisp)
+  + [[https://github.com/scymtym/parser.common-rules][parser.common-rules]] (not yet in Quicklisp)
+* Usage
+  + Load the system
+    #+BEGIN_SRC lisp :results silent :exports both
+      (ql:quickload :leap-parser)
+    #+END_SRC
+
+  + Some example input
+    #+BEGIN_SRC lisp :results output :exports both
+      (defparameter *input*
+        (alexandria:read-file-into-string
+         (asdf:system-relative-pathname :leap-parser "examples/test.leap")))
+
+      (princ *input*)
+    #+END_SRC
+
+    #+RESULTS:
+    #+begin_example
+    # Comment
+
+    logFile leap.log
+
+    addAtomTypes {
+      { "H"   "H" "sp3" }
+    }
+
+    HOH = TP3
+    #+end_example
+
+  + Parse it, constructing the result syntax tree using the ~list~
+    builder
+
+    #+BEGIN_SRC lisp :results value scalar :exports both
+      (architecture.builder-protocol:with-builder ('list)
+        (esrap:parse 'leap-parser::leap *input*))
+    #+END_SRC
+
+    #+RESULTS:
+    #+begin_example
+    (:LEAP
+     (:INSTRUCTION
+      (((:COMMENT NIL :CONTENT " Comment"))
+       ((:FUNCTION (:ARGUMENT (((:LITERAL NIL :VAUE "leap.log")))) :NAME
+         "logFile"))
+       ((:FUNCTION
+         (:ARGUMENT
+          (((:LIST
+             (:ELEMENT
+              (((:LIST
+                 (:ELEMENT
+                  (((:LITERAL NIL :VAUE "H")) ((:LITERAL NIL :VAUE "H"))
+                   ((:LITERAL NIL :VAUE "sp3"))))))))))))
+         :NAME "addAtomTypes"))
+       ((:ASSIGNMENT (:VALUE (((:LITERAL NIL :VAUE "TP3")))) :NAME "HOH")))))
+    NIL
+    T
+    #+end_example
