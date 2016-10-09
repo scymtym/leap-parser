@@ -135,7 +135,8 @@
 ;;; Assignment
 
 (defrule assignment
-    (and variable-name/?s token-=/?s (? (or function raw-expression)))
+    (or (and variable-name/?s token-=/?s (or function raw-expression))
+        (and variable-name/?s token-=    (and)))
   (:destructure (name operator value)
     (declare (ignore operator))
     (architecture.builder-protocol:node* (:assignment :name name)
