@@ -138,11 +138,11 @@
 
 (defun parse-list-elements (text position end)
   (let ((*list-context* t))
-    (parse '(* raw-expression/?s) text
+    (parse '(and token-{/?s (* raw-expression/?s) token-}) text
            :start position :end end :raw t)))
 
 (defrule list
-    (and token-{/?s #'parse-list-elements token-})
+    #'parse-list-elements
   (:function second)
   (:lambda (elements)
     (architecture.builder-protocol:node* (:list)
