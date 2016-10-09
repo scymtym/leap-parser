@@ -22,8 +22,9 @@
 
 (defvar *list-context* nil)
 
-(defrule end-of-command
-    (or <end-of-input> #\Newline token-\;)
+(defrule end-of-instruction
+    (and (? horizontal-whitespace)
+         (or token-\; (& comment) newline <end-of-input>))
   (:constant nil))
 
 (defrule skippable?
@@ -85,7 +86,7 @@
         (* :instruction instructions)))))
 
 (defrule instruction
-    (and (or assignment function) end-of-command)
+    (and (or assignment function) end-of-instruction)
   (:function first))
 
 ;;; Function Call
@@ -150,9 +151,7 @@
     (or raw-expression function))
 
 (defrule/s raw-expression
-    (or list
-        literal
-        skippable))
+    (or list literal))
 
 (defun parse-list-elements (text position end)
   (let ((*list-context* t))
