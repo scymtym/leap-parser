@@ -25,8 +25,5 @@
    #:esrap
    #:parser.common-rules)
 
-  (:local-nicknames
-   (#:bp #:architecture.builder-protocol))
-
   (:documentation
    "Embryonic parser for the leap file format."))

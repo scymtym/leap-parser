@@ -45,7 +45,7 @@
          (* (and #\Newline (* whitespace) shell-style-comment/trimmed)))
   (:text t)
   (:lambda (content)
-    (bp:node* (:comment :content content))))
+    (architecture.builder-protocol:node* (:comment :content content))))
 
 (macrolet ((define-tokens (&rest characters)
              (flet ((make-rule (character)
@@ -63,7 +63,7 @@
            skippable #\Newline token-\;)) ; TODO hacky
   (:lambda (things)
     (let ((instructions (remove-if (of-type '(or null string)) things)))
-      (bp:node* (:leap)
+      (architecture.builder-protocol:node* (:leap)
         (* :instruction instructions)))))
 
 (defrule instruction
@@ -75,7 +75,7 @@
 (defrule function
     (and function-name/?s arguments)
   (:destructure (name arguments)
-    (bp:node* (:function :name name)
+    (architecture.builder-protocol:node* (:function :name name)
       (* :argument arguments))))
 
 (defrule/s function-name
@@ -119,8 +119,8 @@
     (and variable-name/?s token-=/?s (? (or function raw-expression)))
   (:destructure (name operator value)
     (declare (ignore operator))
-    (bp:node* (:assignment :name name)
-      (bp:? :value value))))
+    (architecture.builder-protocol:node* (:assignment :name name)
+      (architecture.builder-protocol:? :value value))))
 
 (defrule/s variable-name
     (+ (character-ranges (#\a #\z) (#\A #\Z) (#\0 #\9) #\. #\_))
@@ -145,7 +145,7 @@
     (and token-{/?s #'parse-list-elements token-})
   (:function second)
   (:lambda (elements)
-    (bp:node* (:list)
+    (architecture.builder-protocol:node* (:list)
       (* :element (remove nil elements)))))
 
 (defrule literal
@@ -155,7 +155,7 @@
         variable-name
         dummy)
   (:lambda (value)
-    (bp:node* (:literal :value value))))
+    (architecture.builder-protocol:node* (:literal :value value))))
 
 (defrule string-literal/dollar
     (and #\$ (* (not (or whitespace #\, #\;))) (? (or #\, #\;)))
