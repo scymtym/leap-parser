@@ -62,8 +62,9 @@
     (and shell-style-comment/trimmed
          (* (and newline (? whitespace) shell-style-comment/trimmed)))
   (:text t)
-  (:lambda (content)
-    (architecture.builder-protocol:node* (:comment :content content))))
+  (:lambda (content &bounds start end)
+    (architecture.builder-protocol:node* (:comment :content content
+                                                   :bounds  (cons start end)))))
 
 (macrolet ((define-tokens (&rest characters)
              (flet ((make-rule (character)
@@ -80,9 +81,9 @@
     (* (or instruction
            comment
            horizontal-whitespace newline token-\;)) ; TODO hacky
-  (:lambda (things)
+  (:lambda (things &bounds start end)
     (let ((instructions (remove nil things)))
-      (architecture.builder-protocol:node* (:leap)
+      (architecture.builder-protocol:node* (:leap :bounds (cons start end))
         (* :instruction instructions)))))
 
 (defrule instruction
@@ -94,8 +95,9 @@
 (defrule function
     (or (and function-name/?s arguments)
         (and function-name/?s (and)))
-  (:destructure (name arguments)
-    (architecture.builder-protocol:node* (:function :name name)
+  (:destructure (name arguments &bounds start end)
+    (architecture.builder-protocol:node* (:function :name   name
+                                                    :bounds (cons start end))
       (* :argument arguments))))
 
 (defrule/s function-name
@@ -140,9 +142,10 @@
 (defrule assignment
     (or (and variable-name/?s token-=/?s (or function raw-expression))
         (and variable-name/?s token-=    (and)))
-  (:destructure (name operator value)
+  (:destructure (name operator value &bounds start end)
     (declare (ignore operator))
-    (architecture.builder-protocol:node* (:assignment :name name)
+    (architecture.builder-protocol:node* (:assignment :name   name
+                                                      :bounds (cons start end))
       (architecture.builder-protocol:? :value value))))
 
 (defrule/s variable-name
@@ -169,8 +172,8 @@
 (defrule list
     #'parse-list-elements
   (:function second)
-  (:lambda (elements)
-    (architecture.builder-protocol:node* (:list)
+  (:lambda (elements &bounds start end)
+    (architecture.builder-protocol:node* (:list :bounds (cons start end))
       (* :element (remove nil elements)))))
 
 (defrule literal
@@ -179,8 +182,9 @@
         string-literal/dollar
         variable-name
         dummy)
-  (:lambda (value)
-    (architecture.builder-protocol:node* (:literal :value value))))
+  (:lambda (value &bounds start end)
+    (architecture.builder-protocol:node* (:literal :value  value
+                                                   :bounds (cons start end)))))
 
 (defrule string-literal/dollar
     (and #\$ (* (not (or whitespace-character #\, #\;))) (? (or #\, #\;)))

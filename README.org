@@ -34,26 +34,32 @@
 
     #+BEGIN_SRC lisp :results value scalar :exports both
       (architecture.builder-protocol:with-builder ('list)
-        (esrap:parse 'leap-parser::leap *input*))
+      (esrap:parse 'leap-parser::leap *input*))
     #+END_SRC
 
     #+RESULTS:
     #+begin_example
     (:LEAP
      (:INSTRUCTION
-      (((:COMMENT NIL :CONTENT " Comment"))
-       ((:FUNCTION (:ARGUMENT (((:LITERAL NIL :VALUE "leap.log")))) :NAME
-         "logFile"))
+      (((:COMMENT NIL :CONTENT " Comment" :BOUNDS (0 . 9)))
+       ((:FUNCTION
+         (:ARGUMENT (((:LITERAL NIL :VALUE "leap.log" :BOUNDS (19 . 27))))) :NAME
+         "logFile" :BOUNDS (11 . 27)))
        ((:FUNCTION
          (:ARGUMENT
           (((:LIST
              (:ELEMENT
               (((:LIST
                  (:ELEMENT
-                  (((:LITERAL NIL :VALUE "H")) ((:LITERAL NIL :VALUE "H"))
-                   ((:LITERAL NIL :VALUE "sp3"))))))))))))
-         :NAME "addAtomTypes"))
-       ((:ASSIGNMENT (:VALUE (((:LITERAL NIL :VALUE "TP3")))) :NAME "HOH")))))
+                  (((:LITERAL NIL :VALUE "H" :BOUNDS (48 . 51)))
+                   ((:LITERAL NIL :VALUE "H" :BOUNDS (54 . 57)))
+                   ((:LITERAL NIL :VALUE "sp3" :BOUNDS (58 . 63)))))
+                 :BOUNDS (46 . 65)))))
+             :BOUNDS (42 . 67)))))
+         :NAME "addAtomTypes" :BOUNDS (29 . 67)))
+       ((:ASSIGNMENT (:VALUE (((:LITERAL NIL :VALUE "TP3" :BOUNDS (75 . 78)))))
+         :NAME "HOH" :BOUNDS (69 . 78)))))
+     :BOUNDS (0 . 78))
     NIL
     T
 #+end_example
