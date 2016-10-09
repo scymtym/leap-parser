@@ -92,7 +92,8 @@
 ;;; Function Call
 
 (defrule function
-    (and function-name/?s arguments)
+    (or (and function-name/?s arguments)
+        (and function-name/?s (and)))
   (:destructure (name arguments)
     (architecture.builder-protocol:node* (:function :name name)
       (* :argument arguments))))
@@ -130,7 +131,9 @@
   (:text t))
 
 (defrule arguments
-    (* raw-expression))
+    (and raw-expression (* (and skippable? raw-expression)))
+  (:destructure (first rest)
+    (when first (list* first (mapcar #'second rest)))))
 
 ;;; Assignment
 
