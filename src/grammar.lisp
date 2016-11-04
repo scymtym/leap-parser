@@ -159,8 +159,12 @@
 
 (defun parse-list-elements (text position end)
   (let ((*list-context* t))
-    (parse '(and token-{/?s (* raw-expression/?s) token-}) text
-           :start position :end end :raw t)))
+    (parse '(and token-{
+                 (* (or raw-expression
+                        comment
+                        horizontal-whitespace newline))
+                 token-})
+           text :start position :end end :raw t)))
 
 (defrule list
     #'parse-list-elements
