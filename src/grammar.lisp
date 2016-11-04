@@ -30,19 +30,36 @@
     (? skippable))
 
 (defrule skippable
-    (+ (or whitespace comment))
+    (+ (or whitespace-character comment))
+  (:constant nil))
+
+(defrule horizontal-whitespace
+    (+ spacoid-character)
+  (:constant nil))
+
+(defrule spacoid-character
+    (or #\Space #\Tab)
   (:constant nil))
 
 (defrule whitespace
-    (or #\Space #\Tab newline))
+    (+ whitespace-character)
+  (:constant nil))
+
+(defrule whitespace-character
+    (or spacoid-character maybe-newline)
+  (:constant nil))
+
+(defrule maybe-newline
+    newline
+  (:when *list-context*))
 
 (defrule newline
     #\Newline
-  (:when *list-context*))
+  (:constant nil))
 
 (defrule comment
     (and shell-style-comment/trimmed
-         (* (and #\Newline (* whitespace) shell-style-comment/trimmed)))
+         (* (and newline (? whitespace) shell-style-comment/trimmed)))
   (:text t)
   (:lambda (content)
     (architecture.builder-protocol:node* (:comment :content content))))
@@ -51,7 +68,8 @@
              (flet ((make-rule (character)
                       (let ((rule-name (symbolicate '#:token- (string character))))
                         `(defrule/s ,rule-name
-                             ,character))))
+                             ,character
+                           (:constant nil)))))
                `(progn ,@(mapcar #'make-rule characters)))))
   (define-tokens #\; #\= #\* #\{ #\}))
 
@@ -60,9 +78,9 @@
 (defrule leap
     (* (or instruction
            comment
-           skippable #\Newline token-\;)) ; TODO hacky
+           horizontal-whitespace newline token-\;)) ; TODO hacky
   (:lambda (things)
-    (let ((instructions (remove-if (of-type '(or null string)) things)))
+    (let ((instructions (remove nil things)))
       (architecture.builder-protocol:node* (:leap)
         (* :instruction instructions)))))
 
@@ -158,7 +176,7 @@
     (architecture.builder-protocol:node* (:literal :value value))))
 
 (defrule string-literal/dollar
-    (and #\$ (* (not (or whitespace #\, #\;))) (? (or #\, #\;)))
+    (and #\$ (* (not (or whitespace-character #\, #\;))) (? (or #\, #\;)))
   (:function second)
   (:text t))
 
