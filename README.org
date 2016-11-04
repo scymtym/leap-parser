@@ -1,5 +1,5 @@
 * Dependencies
-  + [[https://github.com/scymtym/architecture.builder-protocol][architecture.builder-protocol]] (not yet in Quicklisp)
+  + [[https://github.com/scymtym/architecture.builder-protocol][architecture.builder-protocol]]
   + [[https://github.com/scymtym/parser.common-rules][parser.common-rules]] (not yet in Quicklisp)
 * Usage
   + Load the system
