@@ -34,7 +34,7 @@
 
     #+BEGIN_SRC lisp :results value scalar :exports both
       (architecture.builder-protocol:with-builder ('list)
-      (esrap:parse 'leap-parser::leap *input*))
+        (esrap:parse 'leap-parser::leap *input*))
     #+END_SRC
 
     #+RESULTS:
@@ -62,4 +62,4 @@
      :BOUNDS (0 . 78))
     NIL
     T
-#+end_example
+    #+end_example
