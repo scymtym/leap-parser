@@ -21,7 +21,7 @@
   :licence     "MIT"
   :description "Embryonic parser for the leap file format"
   :depends-on  (:alexandria
-                :esrap
+                (:version :esrap "0.15")
                 :parser.common-rules
                 :architecture.builder-protocol)
   :components  ((:module     "src"
