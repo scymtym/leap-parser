@@ -2,64 +2,88 @@
   + [[https://github.com/scymtym/architecture.builder-protocol][architecture.builder-protocol]]
   + [[https://github.com/scymtym/parser.common-rules][parser.common-rules]]
 * Usage
-  + Load the system
-    #+BEGIN_SRC lisp :results silent :exports both
-      (ql:quickload :leap-parser)
-    #+END_SRC
+** Load the System
+   #+BEGIN_SRC lisp :results silent :exports both
+     (ql:quickload :leap-parser)
+   #+END_SRC
 
-  + Some example input
-    #+BEGIN_SRC lisp :results output :exports both
-      (defparameter *input*
-        (alexandria:read-file-into-string
-         (asdf:system-relative-pathname :leap-parser "examples/test.leap")))
+** Example Input
+   #+BEGIN_SRC lisp :results output :exports both
+     (defparameter *input*
+       (alexandria:read-file-into-string
+        (asdf:system-relative-pathname :leap-parser "examples/test.leap")))
 
-      (princ *input*)
-    #+END_SRC
+     (princ *input*)
+   #+END_SRC
 
-    #+RESULTS:
-    #+begin_example
-    # Comment
+   #+RESULTS:
+   #+begin_example
+   # Comment
 
-    logFile leap.log
+   logFile leap.log
 
-    addAtomTypes {
-      { "H"   "H" "sp3" }
-    }
+   addAtomTypes {
+     { "H"   "H" "sp3" }
+   }
 
-    HOH = TP3
-    #+end_example
+   HOH = TP3
+   #+end_example
 
-  + Parse it, constructing the result syntax tree using the ~list~
-    builder
+** Parsing
 
-    #+BEGIN_SRC lisp :results value scalar :exports both
-      (architecture.builder-protocol:with-builder ('list)
-        (esrap:parse 'leap-parser::leap *input*))
-    #+END_SRC
+   Parse the input, constructing the result syntax tree using the
+   ~list~ builder
 
-    #+RESULTS:
-    #+begin_example
-    (:LEAP
-     (:INSTRUCTION
-      (((:COMMENT NIL :CONTENT " Comment" :BOUNDS (0 . 9)))
-       ((:FUNCTION
-         (:ARGUMENT (((:LITERAL NIL :VALUE "leap.log" :BOUNDS (19 . 27))))) :NAME
-         "logFile" :BOUNDS (11 . 27)))
-       ((:FUNCTION
-         (:ARGUMENT
-          (((:LIST
-             (:ELEMENT
-              (((:LIST
-                 (:ELEMENT
-                  (((:LITERAL NIL :VALUE "H" :BOUNDS (48 . 51)))
-                   ((:LITERAL NIL :VALUE "H" :BOUNDS (54 . 57)))
-                   ((:LITERAL NIL :VALUE "sp3" :BOUNDS (58 . 63)))))
-                 :BOUNDS (46 . 65)))))
-             :BOUNDS (42 . 67)))))
-         :NAME "addAtomTypes" :BOUNDS (29 . 67)))
-       ((:ASSIGNMENT (:VALUE (((:LITERAL NIL :VALUE "TP3" :BOUNDS (75 . 78)))))
-         :NAME "HOH" :BOUNDS (69 . 78)))))
-     :BOUNDS (0 . 78))
-    NIL
-    T
-    #+end_example
+   #+BEGIN_SRC lisp :results value scalar :exports both
+     (defparameter *ast*
+       (architecture.builder-protocol:with-builder ('list)
+         (esrap:parse 'leap-parser::leap *input*)))
+
+     *ast*
+   #+END_SRC
+
+   #+RESULTS:
+   #+begin_example
+   (:LEAP
+    (:INSTRUCTION
+     (((:COMMENT NIL :CONTENT " Comment" :BOUNDS (0 . 9)))
+        ((:FUNCTION
+        (:ARGUMENT (((:LITERAL NIL :VALUE "leap.log" :BOUNDS (19 . 27))))) :NAME
+        "logFile" :BOUNDS (11 . 27)))
+        ((:FUNCTION
+        (:ARGUMENT
+         (((:LIST
+            (:ELEMENT
+             (((:LIST
+                (:ELEMENT
+                 (((:LITERAL NIL :VALUE "H" :BOUNDS (48 . 51)))
+                  ((:LITERAL NIL :VALUE "H" :BOUNDS (54 . 57)))
+                  ((:LITERAL NIL :VALUE "sp3" :BOUNDS (58 . 63)))))
+                :BOUNDS (46 . 65)))))
+            :BOUNDS (42 . 67)))))
+        :NAME "addAtomTypes" :BOUNDS (29 . 67)))
+        ((:ASSIGNMENT (:VALUE (((:LITERAL NIL :VALUE "TP3" :BOUNDS (75 . 78)))))
+        :NAME "HOH" :BOUNDS (69 . 78)))))
+    :BOUNDS (0 . 78))
+   NIL
+   T
+   #+end_example
+
+** Interpretation
+
+   #+BEGIN_SRC lisp :results output :exports both
+     (let ((env (make-instance leap-parser::'leap-environment)))
+       (setf (leap-parser::lookup "logFile" :function env)
+             (lambda (filename)
+               (print (list "logFile" filename "called")))
+             (leap-parser::lookup "addAtomTypes" :function env)
+             (lambda (types)
+               (print (list "addAtomTypes" types "called"))))
+       (leap-parser::evaluate 'list *ast* env))
+   #+END_SRC
+
+   #+RESULTS:
+   #+begin_example
+   ("logFile" "leap.log" "called")
+   ("addAtomTypes" (("H" "H" "sp3" (121))) "called")
+   #+end_example
