@@ -22,8 +22,10 @@
 
     logFile leap.log
 
+    x = 5
+
     addAtomTypes {
-      { "H"   "H" "sp3" }
+      { "H"   "H" "sp3" { (+ 1 (alexandria:factorial x)) } }
     }
 
     HOH = TP3
@@ -45,21 +47,29 @@
        ((:FUNCTION
          (:ARGUMENT (((:LITERAL NIL :VALUE "leap.log" :BOUNDS (19 . 27))))) :NAME
          "logFile" :BOUNDS (11 . 27)))
+       ((:ASSIGNMENT (:VALUE (((:LITERAL NIL :VALUE 5 :BOUNDS (33 . 34))))) :NAME
+         "x" :BOUNDS (29 . 34)))
        ((:FUNCTION
          (:ARGUMENT
           (((:LIST
              (:ELEMENT
               (((:LIST
                  (:ELEMENT
-                  (((:LITERAL NIL :VALUE "H" :BOUNDS (48 . 51)))
-                   ((:LITERAL NIL :VALUE "H" :BOUNDS (54 . 57)))
-                   ((:LITERAL NIL :VALUE "sp3" :BOUNDS (58 . 63)))))
-                 :BOUNDS (46 . 65)))))
-             :BOUNDS (42 . 67)))))
-         :NAME "addAtomTypes" :BOUNDS (29 . 67)))
-       ((:ASSIGNMENT (:VALUE (((:LITERAL NIL :VALUE "TP3" :BOUNDS (75 . 78)))))
-         :NAME "HOH" :BOUNDS (69 . 78)))))
-     :BOUNDS (0 . 78))
+                  (((:LITERAL NIL :VALUE "H" :BOUNDS (55 . 58)))
+                   ((:LITERAL NIL :VALUE "H" :BOUNDS (61 . 64)))
+                   ((:LITERAL NIL :VALUE "sp3" :BOUNDS (65 . 70)))
+                   ((:LIST
+                     (:ELEMENT
+                      (((:S-EXPR NIL :VALUE
+                         (+ 1 (ALEXANDRIA.0.DEV:FACTORIAL LEAP-USER::X)) :BOUNDS
+                         (73 . 104)))))
+                     :BOUNDS (71 . 105)))))
+                 :BOUNDS (53 . 107)))))
+             :BOUNDS (49 . 109)))))
+         :NAME "addAtomTypes" :BOUNDS (36 . 109)))
+       ((:ASSIGNMENT (:VALUE (((:LITERAL NIL :VALUE "TP3" :BOUNDS (117 . 120)))))
+         :NAME "HOH" :BOUNDS (111 . 120)))))
+     :BOUNDS (0 . 120))
     NIL
     T
     #+end_example

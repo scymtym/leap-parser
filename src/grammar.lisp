@@ -163,7 +163,7 @@
     (or raw-expression function))
 
 (defrule/s raw-expression
-    (or list literal))
+    (or list literal s-expr))
 
 (defun parse-list-elements (text position end)
   (let ((*list-context* t))
@@ -198,3 +198,31 @@
 
 (defrule dummy
     token-*)
+
+(defun parse-with-read (text position end)
+  (handler-case
+      ;; When successful, READ-FROM-STRING returns the read object and
+      ;; the position up to which TEXT has been consumed.
+      (let ((*package* (or (find-package '#:leap-user)
+                           (make-package '#:leap-user :use '(#:common-lisp)))))
+        (read-from-string text t nil :start position :end end))
+    ;; When READ-FROM-STRING fails, indicate the parse failure,
+    ;; including CONDITION as explanation.
+    (stream-error (condition)
+      ;; For STREAM-ERRORs, we can try to determine and return the
+      ;; exact position of the failure.
+      (let ((position (ignore-errors
+                        (file-position (stream-error-stream condition)))))
+        (values nil position condition)))
+    (error (condition)
+      ;; For general ERRORs, we cannot determine the exact position of
+      ;; the failure.
+      (values nil nil condition))))
+
+(defrule s-expr
+    (and (& #\() #'parse-with-read)
+  (:function second)
+  (:lambda (expression &bounds start end)
+    (architecture.builder-protocol:node*
+        (:s-expr :value  expression
+                 :bounds (cons start end)))))
