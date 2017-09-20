@@ -2,8 +2,10 @@
 
 logFile leap.log
 
+x = 5
+
 addAtomTypes {
-  { "H"   "H" "sp3" }
+  { "H"   "H" "sp3" { (+ 1 (alexandria:factorial x)) } }
 }
 
 HOH = TP3
