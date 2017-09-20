@@ -1,4 +1,4 @@
-;;;; Copyright (c) 2016 Jan Moringen <jmoringe@techfak.uni-bielefeld.de>
+;;;; Copyright (c) 2016, 2017 Jan Moringen <jmoringe@techfak.uni-bielefeld.de>
 ;;;;
 ;;;; Permission is hereby granted, free of charge, to any person
 ;;;; obtaining a copy of this software and associated documentation files
@@ -21,7 +21,7 @@
   :licence     "MIT"
   :description "Embryonic parser for the leap file format"
   :depends-on  (:alexandria
-                (:version :esrap "0.15")
+                (:version :esrap "0.16")
                 :parser.common-rules
                 :architecture.builder-protocol)
   :components  ((:module     "src"

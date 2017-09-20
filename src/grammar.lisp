@@ -1,4 +1,4 @@
-;;;; Copyright (c) 2016 Jan Moringen <jmoringe@techfak.uni-bielefeld.de>
+;;;; Copyright (c) 2016, 2017 Jan Moringen <jmoringe@techfak.uni-bielefeld.de>
 ;;;;
 ;;;; Permission is hereby granted, free of charge, to any person
 ;;;; obtaining a copy of this software and associated documentation files
@@ -25,10 +25,12 @@
 (defrule end-of-instruction
     (and (? horizontal-whitespace)
          (or token-\; (& comment) newline <end-of-input>))
-  (:constant nil))
+  (:constant nil)
+  (:error-report nil))
 
 (defrule skippable?
-    (? skippable))
+    (? skippable)
+  (:error-report nil))
 
 (defrule skippable
     (+ (or whitespace-character comment))
@@ -36,7 +38,8 @@
 
 (defrule horizontal-whitespace
     (+ spacoid-character)
-  (:constant nil))
+  (:constant nil)
+  (:error-report nil))
 
 (defrule spacoid-character
     (or #\Space #\Tab)
@@ -56,7 +59,8 @@
 
 (defrule newline
     #\Newline
-  (:constant nil))
+  (:constant nil)
+  (:error-report nil))
 
 (defrule comment
     (and shell-style-comment/trimmed
@@ -64,7 +68,8 @@
   (:text t)
   (:lambda (content &bounds start end)
     (architecture.builder-protocol:node* (:comment :content content
-                                                   :bounds  (cons start end)))))
+                                                   :bounds  (cons start end))))
+  (:error-report nil))
 
 (macrolet ((define-tokens (&rest characters)
              (flet ((make-rule (character)
