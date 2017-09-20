@@ -27,4 +27,5 @@
   :components  ((:module     "src"
                  :serial     t
                  :components ((:file "package")
-                              (:file "grammar")))))
+                              (:file "grammar")
+                              (:file "interpreter")))))
